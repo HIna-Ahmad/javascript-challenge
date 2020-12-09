@@ -1,5 +1,5 @@
 // from data.js
-var tableData = data;
+// var tableData = data;
 
 // # JavaScript Homework - JavaScript and DOM Manipulation
 
@@ -48,16 +48,21 @@ var table = d3.select("tbody");
 // });
 
 //5. Use d3 to update each cell's text with Datum's key Values
-data.forEach(function (datum) {
-  console.log(datum);
-  var row = table.append("tr");
-  Object.entries(datum).forEach(function ([key, value]) {
-    console.log(key, value);
-    // Append a Cell to the Row for each Value in Datum
-    var cell = row.append("td");
-    cell.text(value);
+
+function drawTable(input) {
+  input.forEach(function (datum) {
+    console.log(datum);
+    var row = table.append("tr");
+    Object.entries(datum).forEach(function ([key, value]) {
+      console.log(key, value);
+      // Append a Cell to the Row for each Value in Datum
+      var cell = row.append("td");
+      cell.text(value);
+    });
   });
-});
+  console.log(input);
+}
+drawTable(data);
 
 // * Use a date form in your HTML document and
 // write JavaScript code that will listen for
@@ -67,70 +72,31 @@ data.forEach(function (datum) {
 // Getting a reference to the BUTTON element on the page with ID #filter-btn
 var button = d3.select("#filter-btn");
 
-// Geting a reference to the INPUT element on page with ID #datetime
-var inputField = d3.select("#datetime");
+// Getting a reference to the FORM element on the page with ID #form
+var form = d3.select("#form");
 
-//This HANDLER FUNCTION is triggered when the button is clicked
-function handleClick() {
-  console.log("A button was clicked!");
-  // Use d3 to see the object dispatched the event
-  console.log(d3.event.target);
+// Create EVENT HANDLER for CLICKING BUTTON or pressing ENTER
+button.on("click", runEnter);
+form.on("submit", runEnter);
+
+// Create Function to run Event Handler
+function runEnter() {
+  // Prevent the page from refreshing
+  d3.event.preventDefault();
+
+  // Select the input element and get the raw HTML node
+  var inputElement = d3.select("#datetime");
+
+  //get the value property of the input element
+  var inputValue = inputElement.property("value");
+
+  console.log(inputValue);
+  console.log(data);
+
+  var filterData = data.filter((datum) => datum.datetime === inputValue);
+  console.log(filterData);
+
+  table.html("");
+
+  drawTable(filterData);
 }
-
-// Attach an EVENT to the HANDLER FUNCTION by using the 'on' function in d3
-button.on("click", handleClick);
-
-//Define CLICK HANDLER INLINE
-button.on("click", function () {
-  console.log("Hi, a button was clicked!");
-  console.log(d3.event.target);
-});
-
-// Input fields can trigger a change event when new text is entered
-inputField.on("change", function () {
-  var newText = d3.event.target.value;
-  console.log(newText);
-});
-
-// var text in tdbody and class and out put tbody
-var text = d3.select("#text");
-var output = d3.select(".output");
-
-// REVERSE A STRING Function
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
-
-// HANDLE INPUT CHANGE Function
-function handleChange(event) {
-  // Grabbing INPUTFIELD Value
-  var inputField = d2.event.target.value;
-
-  // REVERSE the INPUT String
-  var reversedInput = reverseString(inputText);
-
-  // Set the OUTPUT TEXT to the Reversed input string
-  output.text(reversedInput);
-}
-text.on("change", handleChange);
-
-/// Level 2: Multiple Search Categories (Optional)
-// * Complete all of Level 1 criteria.
-
-// * Using multiple `input` tags and/or select dropdowns, write JavaScript code so the user can to set multiple filters and search for UFO sightings using the following criteria based on the table columns:
-
-//   1. `date/time`
-//   2. `city`
-//   3. `state`
-//   4. `country`
-//   5. `shape`
-
-// - - -
-
-// ### Dataset
-
-// * [UFO Sightings Data](StarterCode/static/js/data.js)
-
-// - - -
-
-// **Good luck!**
